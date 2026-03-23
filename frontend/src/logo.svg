@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="50" viewBox="0 0 200 50" fill="none">
+  <rect width="200" height="50" rx="8" fill="#fff" />
+  <g transform="translate(8,6)">
+    <circle cx="18" cy="18" r="16" fill="#2e7d32" />
+    <path d="M12 22 L18 10 L24 22 Z" fill="#a5d6a7" />
+    <text x="48" y="24" font-family="Arial, Helvetica, sans-serif" font-size="16" fill="#1b5e20">Farm2Mandi</text>
+  </g>
+</svg>
