@@ -162,8 +162,18 @@ export default function Transport() {
       }
 
       const data = await findDrivers(searchData);
-      setDrivers(data.availableDrivers || []);
-      if (data.availableDrivers.length === 0) {
+
+      console.log("API RESPONSE:", data); // ADD THIS
+
+      if (!Array.isArray(data?.availableDrivers)) {
+        setError("Invalid data from server");
+        setLoading(false);
+        return;
+      }
+
+      const driversList = data.availableDrivers;
+      setDrivers(driversList);
+      if (driversList.length === 0){
         setError(t('noDriversFound'));
       } else {
         setSuccess(t('foundDrivers', { count: data.availableDrivers.length }));
@@ -521,9 +531,9 @@ export default function Transport() {
                               {driver.name}
                             </Typography>
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mt: 0.5 }}>
-                              <Rating value={driver.rating} readOnly size="small" precision={0.1} />
+                              <Rating value={driver.rating || 0} readOnly size="small" precision={0.1} />
                               <Typography variant="body2" color="text.secondary">
-                                ({driver.rating.toFixed(1)}) • {driver.totalTrips} trips
+                                ({typeof driver.rating === 'number' ? driver.rating.toFixed(1) : '0.0'}) • {driver.totalTrips} trips
                               </Typography>
                             </Box>
                           </Box>
@@ -571,11 +581,13 @@ export default function Transport() {
                             <Typography variant="body2">
                               {driver.locationName || driver.currentMandal}
                             </Typography>
-                            {driver.driverLocation && (
+                            {driver.driverLocation &&
+                            typeof driver.driverLocation.lat === 'number' &&
+                            typeof driver.driverLocation.lng === 'number' && (
                               <Typography variant="caption" color="text.secondary">
                                 Coordinates: {driver.driverLocation.lat.toFixed(4)}, {driver.driverLocation.lng.toFixed(4)}
                               </Typography>
-                            )}
+                          )}
                           </Grid>
                         </Grid>
 

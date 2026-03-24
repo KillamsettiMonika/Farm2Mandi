@@ -22,10 +22,14 @@ router.post('/find-drivers', requireAuth, async (req, res) => {
 
     // Find all available drivers (simplified for testing)
     let drivers = await Driver.find({
-      isAvailable: true,
-      status: { $in: ['Idle', 'Assigned'] } // Can take new bookings
-    })
+    isAvailable: true,
+    status: { $in: ['Idle', 'Assigned'] },
+    vehicleCapacityKg: { $gte: quantityKg },
+    currentMandal: { $regex: new RegExp(fromMandal, "i") } // 🔥 FIX
+  })
       .select('-password');
+      console.log("Searching for:", fromMandal);
+      console.log("Drivers found:", drivers.length);
 
     // Calculate distance and cost for each driver
     const driversWithDetails = drivers.map(driver => {

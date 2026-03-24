@@ -130,8 +130,11 @@ export default function DriverLocation() {
 
     try {
       const position = await getCurrentPosition();
-      const data = await updateDriverLocation(position.latitude, position.longitude);
-      
+      console.log("GPS:", position);
+      const data = await updateDriverLocation(
+      Number(position.latitude),
+      Number(position.longitude)
+    );      
       setLocation(data.location);
       setSuccess(`Location updated: ${data.location.locationName}`);
       

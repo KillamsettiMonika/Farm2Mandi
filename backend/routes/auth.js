@@ -274,20 +274,24 @@ router.post('/register', async (req, res) => {
       if (existingDriverId) return res.status(409).json({ error: 'Driver ID already exists' });
       if (existingVehicle) return res.status(409).json({ error: 'Vehicle number already registered' });
 
-      const driver = new Driver({
-        driverId,
-        name,
-        email: email || undefined,
-        password: hashed,
-        phone: normalizedPhone || phone,
-        vehicleType,
-        vehicleNumber,
-        vehicleCapacityKg,
-        currentMandal,
-        costPerKm,
-        role: 'driver'
-      });
-      await driver.save();
+      const driverData = {
+  driverId,
+  name,
+  phone: normalizedPhone || phone,
+  vehicleType,
+  vehicleNumber,
+  vehicleCapacityKg,
+  currentMandal,
+  costPerKm,
+  role: 'driver'
+};
+
+if (email) driverData.email = email;
+if (hashed) driverData.password = hashed;
+
+const driver = new Driver(driverData);
+
+await driver.save();
 
       const token = jwt.sign({ id: driver._id, phone: driver.phone, role: driver.role }, JWT_SECRET, { expiresIn: '7d' });
       res.cookie('token', token, getCookieOptions());
@@ -295,20 +299,27 @@ router.post('/register', async (req, res) => {
       res.json({ user: publicUser(driver, 'driver') });
     } else {
       // Farmer registration
-      const farmer = new Farmer({
-        name,
-        email: email || undefined,
-        password: hashed,
-        phone: normalizedPhone || phone,
-        village,
-        district,
-        state,
-        pincode,
-        aadhar,
-        farm_size: farm_size || null,
-        crops: Array.isArray(crops) ? crops : (crops ? [crops] : [])
-      });
-      await farmer.save();
+const farmerData = {
+  name,
+  phone: normalizedPhone || phone,
+  village,
+  district,
+  state,
+  pincode,
+  aadhar,
+  farm_size: farm_size || null,
+  crops: Array.isArray(crops) ? crops : (crops ? [crops] : [])
+};
+
+// ✅ only add email if exists
+if (email) farmerData.email = email;
+
+// ✅ only add password if exists
+if (hashed) farmerData.password = hashed;
+
+const farmer = new Farmer(farmerData);
+
+await farmer.save();
 
       const token = jwt.sign({ id: farmer._id, phone: farmer.phone, role: farmer.role }, JWT_SECRET, { expiresIn: '7d' });
       res.cookie('token', token, getCookieOptions());
@@ -316,9 +327,11 @@ router.post('/register', async (req, res) => {
       res.json({ user: publicUser(farmer, 'farmer') });
     }
   } catch (err) {
-    console.error('Register error', err);
-    res.status(500).json({ error: 'Server error' });
-  }
+  console.error("Register error FULL:", err);
+  console.error("Error message:", err.message);
+  console.error("Error stack:", err.stack);
+  res.status(500).json({ error: err.message });
+}
 });
 
 // Login (supports both farmer and driver)

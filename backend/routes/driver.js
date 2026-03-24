@@ -89,36 +89,39 @@ router.post('/update-location', requireAuth, async (req, res) => {
       return res.status(403).json({ error: 'Only drivers can update location' });
     }
 
-    const { latitude, longitude } = req.body;
-    
-    if (!latitude || !longitude) {
-      return res.status(400).json({ error: 'latitude and longitude are required' });
-    }
+const { latitude, longitude } = req.body;
 
-    // Validate coordinates
-    if (typeof latitude !== 'number' || typeof longitude !== 'number') {
-      return res.status(400).json({ error: 'Invalid coordinates format' });
-    }
+if (latitude === undefined || longitude === undefined) {
+  return res.status(400).json({ error: 'latitude and longitude are required' });
+}
 
-    if (latitude < -90 || latitude > 90 || longitude < -180 || longitude > 180) {
-      return res.status(400).json({ error: 'Invalid coordinate values' });
-    }
+const lat = Number(latitude);
+const lng = Number(longitude);
 
-    // Get location name using reverse geocoding
-    const locationName = await getLocationName(latitude, longitude);
+if (isNaN(lat) || isNaN(lng)) {
+  return res.status(400).json({ error: 'Invalid coordinates format' });
+}
 
-    // Update driver location
-    const driver = await Driver.findByIdAndUpdate(
-      req.user._id,
-      {
-        currentLocation: {
-          latitude,
-          longitude
-        },
-        locationName,
-        lastLocationUpdate: new Date()
-      },
-      { new: true }
+let locationName = "Unknown";
+
+try {
+  locationName = await getLocationName(lat, lng);
+} catch (e) {
+  console.log("Geocoding failed:", e.message);
+}
+
+const driver = await Driver.findByIdAndUpdate(
+  req.user._id,
+  {
+    currentLocation: {
+      latitude: lat,
+      longitude: lng
+    },
+    locationName,
+    lastLocationUpdate: new Date()
+  },
+  { new: true }
+
     ).select('-password');
 
     if (!driver) {

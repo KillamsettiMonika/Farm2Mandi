@@ -102,7 +102,10 @@ export async function getMarketDetails(marketName) {
 
 // Driver location endpoints
 export async function updateDriverLocation(latitude, longitude) {
-  const res = await client.post('/driver/update-location', { latitude, longitude });
+  const res = await client.post('/driver/update-location', {
+    latitude,
+    longitude
+  });
   return res.data;
 }
 

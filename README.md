@@ -92,4 +92,3 @@ Enjoy! If you want, I can now run `npm install` for backend and start it here, o
 
 ```
 # farm-mandi
-#jidshiuiufgeiurgh
