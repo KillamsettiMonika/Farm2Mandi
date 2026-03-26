@@ -80,11 +80,18 @@ export default function NavBar(){
                     </>
                   )}
                   {user && isDriver && (
-                    <ListItem disablePadding>
-                      <ListItemButton component={RouterLink} to={'/driver-location'}>
-                        <ListItemText primary={t('locationTracking')} />
-                      </ListItemButton>
-                    </ListItem>
+                    <>
+                      <ListItem disablePadding>
+                        <ListItemButton component={RouterLink} to={'/driver-location'}>
+                          <ListItemText primary={t('locationTracking')} />
+                        </ListItemButton>
+                      </ListItem>
+                      <ListItem disablePadding>
+                        <ListItemButton component={RouterLink} to={'/driver-bookings'}>
+                          <ListItemText primary="Bookings" />
+                        </ListItemButton>
+                      </ListItem>
+                    </>
                   )}
                   {!user ? (
                     <>
@@ -134,7 +141,10 @@ export default function NavBar(){
               </>
             )}
             {user && isDriver && (
-              <Button sx={{ color: '#333', '&:hover': { backgroundColor: 'rgba(0,0,0,0.04)' } }} component={RouterLink} to={'/driver-location'}>{t('locationTracking')}</Button>
+              <>
+                <Button sx={{ color: '#333', '&:hover': { backgroundColor: 'rgba(0,0,0,0.04)' } }} component={RouterLink} to={'/driver-location'}>{t('locationTracking')}</Button>
+                <Button sx={{ color: '#333', '&:hover': { backgroundColor: 'rgba(0,0,0,0.04)' } }} component={RouterLink} to={'/driver-bookings'}>Bookings</Button>
+              </>
             )}
             <LanguageToggle compact />
             {user ? (

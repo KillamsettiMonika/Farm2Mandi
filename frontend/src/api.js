@@ -151,6 +151,16 @@ export async function rejectBooking(bookingId) {
   return res.data;
 }
 
+export async function completeBooking(bookingId) {
+  const res = await client.post(`/driver/booking/${bookingId}/complete`);
+  return res.data;
+}
+
+export async function getDriverBookings() {
+  const res = await client.get('/driver/my-bookings');
+  return res.data;
+}
+
 // Contact endpoint
 export async function sendContactMessage(data) {
   const res = await client.post('/contact', data);

@@ -274,29 +274,38 @@ router.post('/register', async (req, res) => {
       if (existingDriverId) return res.status(409).json({ error: 'Driver ID already exists' });
       if (existingVehicle) return res.status(409).json({ error: 'Vehicle number already registered' });
 
+      // Create a new driver document first to get the _id
       const driverData = {
-  driverId,
-  name,
-  phone: normalizedPhone || phone,
-  vehicleType,
-  vehicleNumber,
-  vehicleCapacityKg,
-  currentMandal,
-  costPerKm,
-  role: 'driver'
-};
+        driverId,
+        name,
+        phone: normalizedPhone || phone,
+        vehicleType,
+        vehicleNumber,
+        vehicleCapacityKg,
+        currentMandal,
+        costPerKm,
+        role: 'driver',
+        // Location fields initialization
+        currentLocation: {
+          latitude: null,
+          longitude: null
+        },
+        locationName: '',
+        isAvailable: true,
+        status: 'Idle'
+      };
 
-if (email) driverData.email = email;
-if (hashed) driverData.password = hashed;
+      if (email) driverData.email = email;
+      if (hashed) driverData.password = hashed;
 
-const driver = new Driver(driverData);
+      const driver = new Driver(driverData);
+      await driver.save();
 
-await driver.save();
-
+      // Now create token with the driver's _id
       const token = jwt.sign({ id: driver._id, phone: driver.phone, role: driver.role }, JWT_SECRET, { expiresIn: '7d' });
       res.cookie('token', token, getCookieOptions());
 
-      res.json({ user: publicUser(driver, 'driver') });
+      res.json({ user: publicUser(driver, 'driver'), message: 'Driver registered successfully' });
     } else {
       // Farmer registration
 const farmerData = {

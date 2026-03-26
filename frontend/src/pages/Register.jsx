@@ -102,7 +102,40 @@ export default function Register() {
 
       const data = await register(submitData);
       localStorage.setItem('user', JSON.stringify(data.user));
-      nav('/welcome2');
+      
+      // If driver, try to get location and update it, then navigate to home
+      if (role === 'driver') {
+        try {
+          // Get current location
+          if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+              async (position) => {
+                try {
+                  // Update location in background (don't wait for it)
+                  await import('../api').then(m => 
+                    m.updateDriverLocation(
+                      position.coords.latitude,
+                      position.coords.longitude
+                    )
+                  );
+                } catch (locErr) {
+                  console.log('Location update in background failed:', locErr.message);
+                }
+              },
+              (err) => {
+                console.log('Geolocation permission denied or unavailable');
+              }
+            );
+          }
+        } catch (locErr) {
+          console.log('Location update failed:', locErr);
+        }
+        // Navigate to home immediately
+        nav('/');
+      } else {
+        // Farmer goes to welcome2
+        nav('/welcome2');
+      }
     } catch (e) {
       setErr(e.response?.data?.error || e.message || 'Registration failed');
     } finally {

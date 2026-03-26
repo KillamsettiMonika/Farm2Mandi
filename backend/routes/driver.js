@@ -110,23 +110,25 @@ try {
   console.log("Geocoding failed:", e.message);
 }
 
-const driver = await Driver.findByIdAndUpdate(
-  req.user._id,
-  {
-    currentLocation: {
-      latitude: lat,
-      longitude: lng
-    },
-    locationName,
-    lastLocationUpdate: new Date()
-  },
-  { new: true }
+// Try to find driver by userId first, then by _id
+let driver = await Driver.findOne({ userId: req.user._id });
+if (!driver) {
+  // Fallback to finding by _id (for newly registered drivers)
+  driver = await Driver.findById(req.user._id);
+}
 
-    ).select('-password');
+if (!driver) {
+  return res.status(404).json({ error: 'Driver not found' });
+}
 
-    if (!driver) {
-      return res.status(404).json({ error: 'Driver not found' });
-    }
+// Update the driver location
+driver.currentLocation = {
+  latitude: lat,
+  longitude: lng
+};
+driver.locationName = locationName;
+driver.lastLocationUpdate = new Date();
+await driver.save();
 
     res.json({
       message: 'Location updated successfully',
@@ -150,7 +152,7 @@ router.get('/my-location', requireAuth, async (req, res) => {
       return res.status(403).json({ error: 'Only drivers can access this endpoint' });
     }
 
-    const driver = await Driver.findById(req.user._id).select('-password');
+    const driver = await Driver.findOne({ userId: req.user._id }).select('-password');
     
     if (!driver) {
       return res.status(404).json({ error: 'Driver not found' });
@@ -200,17 +202,74 @@ router.get('/location/:driverId', requireAuth, async (req, res) => {
   }
 });
 
+// GET /api/driver/my-bookings - Get all bookings for the current driver
+router.get('/my-bookings', requireAuth, async (req, res) => {
+  try {
+    if (req.user.role !== 'driver') {
+      return res.status(403).json({ error: 'Only drivers can access this endpoint' });
+    }
+
+    // Try to find driver by userId first, then by _id
+    let driver = await Driver.findOne({ userId: req.user._id });
+    if (!driver) {
+      // Fallback to finding by _id (for newly registered drivers)
+      driver = await Driver.findById(req.user._id);
+    }
+
+    if (!driver) {
+      return res.status(404).json({ error: 'Driver not found' });
+    }
+
+    const bookings = await Booking.find({ driver: driver._id })
+      .populate('farmerId', 'name phone')
+      .sort({ createdAt: -1 })
+      .lean();
+
+    res.json({
+      bookings: bookings.map(booking => ({
+        _id: booking._id,
+        farmerName: booking.farmerId?.name || 'Unknown Farmer',
+        farmerPhone: booking.farmerId?.phone || 'N/A',
+        cropType: booking.cropType,
+        quantityKg: booking.quantityKg,
+        fromMandi: booking.fromMandi,
+        toMandi: booking.toMandi,
+        status: booking.status,
+        estimatedCost: booking.estimatedCost,
+        distanceKm: booking.distanceKm,
+        createdAt: booking.createdAt,
+        updatedAt: booking.updatedAt
+      }))
+    });
+  } catch (err) {
+    console.error('Get bookings error:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
 // POST /api/driver/booking/:id/accept - Driver accepts a booking
 router.post('/booking/:id/accept', requireAuth, async (req, res) => {
   try {
     if (req.user.role !== 'driver') {
       return res.status(403).json({ error: 'Only drivers can accept bookings' });
     }
+    
+    // Try to find driver by userId first, then by _id
+    let driver = await Driver.findOne({ userId: req.user._id });
+    if (!driver) {
+      // Fallback to finding by _id (for newly registered drivers)
+      driver = await Driver.findById(req.user._id);
+    }
+
+    if (!driver) {
+      return res.status(404).json({ error: 'Driver profile not found' });
+    }
+    
     const booking = await Booking.findById(req.params.id);
     if (!booking) {
       return res.status(404).json({ error: 'Booking not found' });
     }
-    if (String(booking.driver) !== String(req.user._id)) {
+    if (String(booking.driver) !== String(driver._id)) {
       return res.status(403).json({ error: 'Not authorized for this booking' });
     }
     if (booking.status !== 'Requested' && booking.status !== 'Assigned') {
@@ -218,6 +277,12 @@ router.post('/booking/:id/accept', requireAuth, async (req, res) => {
     }
     booking.status = 'Accepted';
     await booking.save();
+    
+    // Update driver status
+    driver.status = 'OnTrip';
+    driver.isAvailable = false;
+    await driver.save();
+    
     res.json({ message: 'Booking accepted', booking });
   } catch (err) {
     console.error('Accept booking error:', err);
@@ -231,11 +296,23 @@ router.post('/booking/:id/reject', requireAuth, async (req, res) => {
     if (req.user.role !== 'driver') {
       return res.status(403).json({ error: 'Only drivers can reject bookings' });
     }
+    
+    // Try to find driver by userId first, then by _id
+    let driver = await Driver.findOne({ userId: req.user._id });
+    if (!driver) {
+      // Fallback to finding by _id (for newly registered drivers)
+      driver = await Driver.findById(req.user._id);
+    }
+
+    if (!driver) {
+      return res.status(404).json({ error: 'Driver profile not found' });
+    }
+    
     const booking = await Booking.findById(req.params.id);
     if (!booking) {
       return res.status(404).json({ error: 'Booking not found' });
     }
-    if (String(booking.driver) !== String(req.user._id)) {
+    if (String(booking.driver) !== String(driver._id)) {
       return res.status(403).json({ error: 'Not authorized for this booking' });
     }
     if (booking.status !== 'Requested' && booking.status !== 'Assigned') {
@@ -245,17 +322,60 @@ router.post('/booking/:id/reject', requireAuth, async (req, res) => {
     await booking.save();
     
     // Make driver available again when rejecting
-    const driver = await Driver.findById(req.user._id);
-    if (driver) {
-      driver.isAvailable = true;
-      driver.status = 'Idle';
-      await driver.save();
-    }
+    driver.isAvailable = true;
+    driver.status = 'Idle';
+    await driver.save();
     
     res.json({ message: 'Booking rejected', booking });
   } catch (err) {
     console.error('Reject booking error:', err);
     res.status(500).json({ error: 'Server error while rejecting booking' });
+  }
+});
+
+// POST /api/driver/booking/:id/complete - Driver completes a delivery
+router.post('/booking/:id/complete', requireAuth, async (req, res) => {
+  try {
+    if (req.user.role !== 'driver') {
+      return res.status(403).json({ error: 'Only drivers can complete bookings' });
+    }
+    
+    // Try to find driver by userId first, then by _id
+    let driver = await Driver.findOne({ userId: req.user._id });
+    if (!driver) {
+      // Fallback to finding by _id (for newly registered drivers)
+      driver = await Driver.findById(req.user._id);
+    }
+
+    if (!driver) {
+      return res.status(404).json({ error: 'Driver profile not found' });
+    }
+    
+    const booking = await Booking.findById(req.params.id);
+    if (!booking) {
+      return res.status(404).json({ error: 'Booking not found' });
+    }
+    if (String(booking.driver) !== String(driver._id)) {
+      return res.status(403).json({ error: 'Not authorized for this booking' });
+    }
+    if (booking.status !== 'Accepted') {
+      return res.status(400).json({ error: 'Only accepted bookings can be marked as delivered' });
+    }
+    
+    // Mark booking as delivered
+    booking.status = 'Delivered';
+    booking.completedAt = new Date();
+    await booking.save();
+    
+    // Reset driver to Idle status and mark as available
+    driver.status = 'Idle';
+    driver.isAvailable = true;
+    await driver.save();
+    
+    res.json({ message: 'Delivery completed successfully', booking });
+  } catch (err) {
+    console.error('Complete booking error:', err);
+    res.status(500).json({ error: 'Server error while completing booking' });
   }
 });
 

@@ -302,3 +302,44 @@ router.post('/booking/:id/cancel', requireAuth, async (req, res) => {
 });
 
 module.exports = router;
+// POST /api/transport/update-location
+// POST /api/transport/update-location
+router.post('/update-location', requireAuth, async (req, res) => {
+  try {
+    console.log("BODY:", req.body); // 🔍 debug
+
+    if (req.user.role !== 'driver') {
+      return res.status(403).json({ error: 'Only drivers can update location' });
+    }
+
+    const { latitude, longitude } = req.body;
+
+    if (!latitude || !longitude) {
+      return res.status(400).json({ error: 'Latitude and Longitude required' });
+    }
+
+    const driver = await Driver.findById(req.user._id);
+
+    if (!driver) {
+      return res.status(404).json({ error: 'Driver not found' });
+    }
+
+    driver.currentLocation = {
+      latitude,
+      longitude
+    };
+
+    driver.lastUpdated = new Date();
+
+    await driver.save();
+
+    res.json({
+      message: 'Location updated successfully',
+      location: driver.currentLocation
+    });
+
+  } catch (err) {
+    console.error('Update location error:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});

@@ -31,6 +31,12 @@ async function requireAuth(req, res, next) {
         message: 'User not found. Please login again.' 
       });
     }
+    
+    // Ensure _id is set for compatibility
+    if (!user._id) {
+      user._id = decoded.id;
+    }
+    
     req.user = user;
     next();
   } catch (err) {

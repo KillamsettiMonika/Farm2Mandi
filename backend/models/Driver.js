@@ -116,6 +116,12 @@
 const mongoose = require('mongoose');
 
 const driverSchema = new mongoose.Schema({
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    sparse: true  // Allow null values
+  },
+
   driverId: { type: String, required: true, unique: true },
 
   name: { type: String, required: true },
@@ -123,7 +129,7 @@ const driverSchema = new mongoose.Schema({
   email: {
     type: String,
     unique: true,
-    sparse: true   // ✅ FIX
+    sparse: true
   },
 
   password: { type: String },
@@ -146,8 +152,47 @@ const driverSchema = new mongoose.Schema({
   },
 
   resetOtp: String,
-  resetOtpExpires: Date
+  resetOtpExpires: Date,
+
+  // Location & Tracking Fields
+  currentLocation: {
+    latitude: Number,
+    longitude: Number
+  },
+  locationName: {
+    type: String,
+    default: ''
+  },
+  lastLocationUpdate: {
+    type: Date
+  },
+  isAvailable: {
+    type: Boolean,
+    default: true
+  },
+  status: {
+    type: String,
+    enum: ["Idle", "Assigned", "OnTrip"],
+    default: "Idle"
+  },
+  rating: {
+    type: Number,
+    default: 4.0,
+    min: 0,
+    max: 5
+  },
+  totalTrips: {
+    type: Number,
+    default: 0
+  }
 
 }, { timestamps: true });
+
+driverSchema.index({ userId: 1 });
+driverSchema.index({ driverId: 1 });
+driverSchema.index({ email: 1 });
+driverSchema.index({ phone: 1 });
+driverSchema.index({ vehicleNumber: 1 });
+driverSchema.index({ status: 1 });
 
 module.exports = mongoose.model('Driver', driverSchema);
