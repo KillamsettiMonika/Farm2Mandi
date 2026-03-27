@@ -121,8 +121,8 @@ export default function InputPage(){
             <option value="Brinjal">{t('Brinjal')}</option>
             <option value="Papaya">{t('Papaya')}</option>
             <option value="Jowar">{t('Jowar')}</option>
-            <option value="Red Gram)(Whole)">{t('Red Gram)(Whole)')}</option>
-            <option value="Cumbu">{t('Cumbu)')}</option>
+            <option value="Red Gram">{t('Red Gram')}</option>
+            <option value="Bajra">{t('Bajra')}</option>
             <option value="Black Gram Dal">{t('Black Gram Dal')}</option>
               </TextField>
             </Grid>
