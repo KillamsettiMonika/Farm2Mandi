@@ -337,6 +337,8 @@ const translations = {
     Papaya: 'Papaya',
     Jowar: 'Jowar (Sorghum)',
     Arhar: 'Arhar (Tur/Red Gram)',
+    'Red Gram': 'Red Gram (Arhar)',
+    redgram: 'Red Gram (Arhar)',
     Bajra: 'Bajra (Pearl Millet)',
     'Black Gram Dal': 'Black Gram Dal (Urd Dal)',
 
@@ -688,6 +690,8 @@ const translations = {
     Papaya: 'బొప్పాయి',
     Jowar: 'జొన్న (సోర్గమ్)',
     Arhar: 'కందులు (తూర్/ఎర్ర శెనగలు)',
+    'Red Gram': 'ఎర్ర శెనగలు (అర్హర్)',
+    redgram: 'ఎర్ర శెనగలు (అర్హర్)',
     Bajra: 'సజ్జలు (ముత్యాల చిరుధాన్యం)',
     'Black Gram Dal': 'మినుములు (ఉద్ద్ దాల్)',
 

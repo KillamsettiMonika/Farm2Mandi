@@ -320,8 +320,8 @@ export default function Home(){
           <Grid container spacing={3}>
             {[
               { text: t('testimonial1'), name: 'Ramesh Kumar', place: 'Andhra Pradesh', rating: 5 },
-              { text: t('testimonial2'), name: 'Sita Devi', place: 'Uttar Pradesh', rating: 4 },
-              { text: t('testimonial3'), name: 'Vikram Singh', place: 'Punjab', rating: 5 }
+              { text: t('testimonial2'), name: 'Sita Devi', place: 'Andhra Pradesh', rating: 4 },
+              { text: t('testimonial3'), name: 'Vikram Singh', place: 'Andhra Pradesh', rating: 5 }
             ].map((item, i) => (
               <Grid item xs={12} md={4} key={i}>
                 <Card sx={{ minHeight:200, display:'flex', flexDirection:'column', justifyContent:'space-between' }}>
