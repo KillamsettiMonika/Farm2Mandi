@@ -20,9 +20,10 @@ const PORT = process.env.PORT || 5000;
 
 // Configure CORS to allow the frontend origin and include credentials (cookies)
 const allowedOrigins = [
-  'http://localhost:5173', // Vite default
-  'http://localhost:3000', // React default
-  'https://farm2mandi.onrender.com', // your production frontend
+  'http://localhost:5173',
+  'http://localhost:3000',
+  'https://farm2mandi.onrender.com',
+  'https://farm2-mandi.vercel.app'   // 👈 ADD THIS
 ];
 app.use(
   cors({
