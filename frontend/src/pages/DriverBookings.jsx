@@ -220,15 +220,15 @@ export default function DriverBookings() {
                   aria-label="booking tabs"
                 >
                   <Tab 
-                    label={`Pending (${pendingBookings.length})`} 
+                    label={`${t('pending')} (${pendingBookings.length})`} 
                     id="booking-tab-0"
                   />
                   <Tab 
-                    label={`Accepted (${acceptedBookings.length})`} 
+                    label={`${t('accepted')} (${acceptedBookings.length})`} 
                     id="booking-tab-1"
                   />
                   <Tab 
-                    label={`Rejected (${rejectedBookings.length})`} 
+                    label={`${t('rejected')} (${rejectedBookings.length})`} 
                     id="booking-tab-2"
                   />
                 </Tabs>
@@ -237,18 +237,18 @@ export default function DriverBookings() {
               {/* Pending Bookings Tab */}
               <TabPanel value={tabValue} index={0}>
                 {pendingBookings.length === 0 ? (
-                  <Alert severity="info">No pending bookings</Alert>
+                  <Alert severity="info">{t('noPendingBookings')}</Alert>
                 ) : (
                   <TableContainer component={Paper} sx={{ mb: 3 }}>
                     <Table>
                       <TableHead sx={{ backgroundColor: '#f5f5f5' }}>
                         <TableRow>
-                          <TableCell sx={{ fontWeight: 700 }}>Farmer</TableCell>
-                          <TableCell sx={{ fontWeight: 700 }}>Crop</TableCell>
-                          <TableCell sx={{ fontWeight: 700 }}>Quantity (kg)</TableCell>
-                          <TableCell sx={{ fontWeight: 700 }}>Route</TableCell>
-                          <TableCell sx={{ fontWeight: 700 }}>Est. Cost</TableCell>
-                          <TableCell sx={{ fontWeight: 700 }}>Actions</TableCell>
+                          <TableCell sx={{ fontWeight: 700 }}>{t('farmer')}</TableCell>
+                          <TableCell sx={{ fontWeight: 700 }}>{t('crop')}</TableCell>
+                          <TableCell sx={{ fontWeight: 700 }}>{t('quantity')}</TableCell>
+                          <TableCell sx={{ fontWeight: 700 }}>{t('route')}</TableCell>
+                          <TableCell sx={{ fontWeight: 700 }}>{t('estCost')}</TableCell>
+                          <TableCell sx={{ fontWeight: 700 }}>{t('actions')}</TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
@@ -291,7 +291,7 @@ export default function DriverBookings() {
                                   onClick={() => openActionDialog(booking, 'accept')}
                                   sx={{ textTransform: 'none' }}
                                 >
-                                  Accept
+                                  {t('acceptBtn')}
                                 </Button>
                                 <Button
                                   size="small"
@@ -301,7 +301,7 @@ export default function DriverBookings() {
                                   onClick={() => openActionDialog(booking, 'reject')}
                                   sx={{ textTransform: 'none' }}
                                 >
-                                  Reject
+                                  {t('rejectBtn')}
                                 </Button>
                               </Box>
                             </TableCell>
@@ -316,7 +316,7 @@ export default function DriverBookings() {
               {/* Accepted Bookings Tab */}
               <TabPanel value={tabValue} index={1}>
                 {acceptedBookings.length === 0 ? (
-                  <Alert severity="info">No accepted bookings</Alert>
+                  <Alert severity="info">{t('noAcceptedBookings')}</Alert>
                 ) : (
                   <Grid container spacing={3}>
                     {acceptedBookings.map((booking) => (
@@ -344,7 +344,7 @@ export default function DriverBookings() {
                               <Grid container spacing={2}>
                                 <Grid item xs={6}>
                                   <Typography variant="caption" color="text.secondary">
-                                    Crop Type
+                                    {t('cropType')}
                                   </Typography>
                                   <Typography variant="body2" sx={{ fontWeight: 600 }}>
                                     {booking.cropType}
@@ -352,7 +352,7 @@ export default function DriverBookings() {
                                 </Grid>
                                 <Grid item xs={6}>
                                   <Typography variant="caption" color="text.secondary">
-                                    Quantity
+                                    {t('quantity')}
                                   </Typography>
                                   <Typography variant="body2" sx={{ fontWeight: 600 }}>
                                     {booking.quantityKg} kg
@@ -360,7 +360,7 @@ export default function DriverBookings() {
                                 </Grid>
                                 <Grid item xs={12}>
                                   <Typography variant="caption" color="text.secondary">
-                                    Route
+                                    {t('route')}
                                   </Typography>
                                   <Typography variant="body2" sx={{ fontWeight: 600 }}>
                                     {booking.fromMandi} → {booking.toMandi}
@@ -368,15 +368,15 @@ export default function DriverBookings() {
                                 </Grid>
                                 <Grid item xs={6}>
                                   <Typography variant="caption" color="text.secondary">
-                                    Distance
+                                    {t('distance')}
                                   </Typography>
                                   <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                                    {booking.distanceKm?.toFixed(2)} km
+                                    {booking.distanceKm?.toFixed(2)} {t('km')}
                                   </Typography>
                                 </Grid>
                                 <Grid item xs={6}>
                                   <Typography variant="caption" color="text.secondary">
-                                    Cost
+                                    {t('cost')}
                                   </Typography>
                                   <Typography variant="body2" sx={{ fontWeight: 600, color: 'success.main' }}>
                                     ₹{booking.estimatedCost?.toFixed(2) || 'N/A'}
@@ -386,7 +386,7 @@ export default function DriverBookings() {
                             </Box>
 
                             <Typography variant="caption" color="text.secondary">
-                              Booked on {new Date(booking.createdAt).toLocaleDateString()}
+                              {t('bookedOn')} {new Date(booking.createdAt).toLocaleDateString()}
                             </Typography>
 
                             {booking.status !== 'Delivered' && (
@@ -399,14 +399,14 @@ export default function DriverBookings() {
                                   onClick={() => openActionDialog(booking, 'complete')}
                                   sx={{ textTransform: 'none' }}
                                 >
-                                  ✓ Booking Successful (Delivered)
+                                  {t('bookingSuccessful')}
                                 </Button>
                               </Box>
                             )}
                             {booking.status === 'Delivered' && (
                               <Box sx={{ mt: 2 }}>
                                 <Chip 
-                                  label="✓ Completed" 
+                                  label={t('completed')}
                                   color="success" 
                                   variant="outlined"
                                   fullWidth
@@ -425,16 +425,16 @@ export default function DriverBookings() {
               {/* Rejected Bookings Tab */}
               <TabPanel value={tabValue} index={2}>
                 {rejectedBookings.length === 0 ? (
-                  <Alert severity="info">No rejected bookings</Alert>
+                  <Alert severity="info">{t('noRejectedBookings')}</Alert>
                 ) : (
                   <TableContainer component={Paper}>
                     <Table>
                       <TableHead sx={{ backgroundColor: '#fff3e0' }}>
                         <TableRow>
-                          <TableCell sx={{ fontWeight: 700 }}>Farmer</TableCell>
-                          <TableCell sx={{ fontWeight: 700 }}>Crop</TableCell>
-                          <TableCell sx={{ fontWeight: 700 }}>Status</TableCell>
-                          <TableCell sx={{ fontWeight: 700 }}>Date</TableCell>
+                          <TableCell sx={{ fontWeight: 700 }}>{t('farmer')}</TableCell>
+                          <TableCell sx={{ fontWeight: 700 }}>{t('crop')}</TableCell>
+                          <TableCell sx={{ fontWeight: 700 }}>{t('status')}</TableCell>
+                          <TableCell sx={{ fontWeight: 700 }}>{t('date')}</TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
@@ -473,7 +473,7 @@ export default function DriverBookings() {
       {/* Confirmation Dialog */}
       <Dialog open={dialogOpen} onClose={closeDialog}>
         <DialogTitle>
-          {dialogAction === 'accept' ? 'Accept Booking' : dialogAction === 'reject' ? 'Reject Booking' : 'Mark Delivery Complete'}
+          {dialogAction === 'accept' ? t('acceptBooking') : dialogAction === 'reject' ? t('rejectBooking') : t('markComplete')}
         </DialogTitle>
         <DialogContent>
           <DialogContentText>
@@ -481,47 +481,41 @@ export default function DriverBookings() {
               <>
                 {dialogAction === 'accept' && (
                   <>
-                    Are you sure you want to <strong>accept</strong> the booking from{' '}
-                    <strong>{selectedBooking.farmerName}</strong> for{' '}
-                    <strong>{selectedBooking.quantityKg} kg</strong> of{' '}
-                    <strong>{selectedBooking.cropType}</strong>?
+                    {t('areYouSureAccept')} <strong>{selectedBooking.farmerName}</strong> {t('for')} <strong>{selectedBooking.quantityKg} kg</strong> {t('of')} <strong>{selectedBooking.cropType}</strong>?
                     <br />
                     <br />
-                    Route: {selectedBooking.fromMandi} → {selectedBooking.toMandi}
+                    {t('route')}: {selectedBooking.fromMandi} → {selectedBooking.toMandi}
                     <br />
-                    Estimated Cost: ₹{selectedBooking.estimatedCost?.toFixed(2) || 'N/A'}
+                    {t('estCost')}: ₹{selectedBooking.estimatedCost?.toFixed(2) || 'N/A'}
                   </>
                 )}
                 {dialogAction === 'reject' && (
                   <>
-                    Are you sure you want to <strong>reject</strong> the booking from{' '}
-                    <strong>{selectedBooking.farmerName}</strong> for{' '}
-                    <strong>{selectedBooking.quantityKg} kg</strong> of{' '}
-                    <strong>{selectedBooking.cropType}</strong>?
+                    {t('areYouSureReject')} <strong>{selectedBooking.farmerName}</strong> {t('for')} <strong>{selectedBooking.quantityKg} kg</strong> {t('of')} <strong>{selectedBooking.cropType}</strong>?
                     <br />
                     <br />
-                    Route: {selectedBooking.fromMandi} → {selectedBooking.toMandi}
+                    {t('route')}: {selectedBooking.fromMandi} → {selectedBooking.toMandi}
                     <br />
-                    Estimated Cost: ₹{selectedBooking.estimatedCost?.toFixed(2) || 'N/A'}
+                    {t('estCost')}: ₹{selectedBooking.estimatedCost?.toFixed(2) || 'N/A'}
                   </>
                 )}
                 {dialogAction === 'complete' && (
                   <>
-                    Have you successfully delivered the goods to <strong>{selectedBooking.toMandi}</strong>?
+                    {t('areYouSureComplete')} <strong>{selectedBooking.toMandi}</strong>?
                     <br />
                     <br />
-                    Farmer: <strong>{selectedBooking.farmerName}</strong>
+                    {t('farmer')}: <strong>{selectedBooking.farmerName}</strong>
                     <br />
-                    Crop: <strong>{selectedBooking.cropType}</strong> ({selectedBooking.quantityKg} kg)
+                    {t('crop')}: <strong>{selectedBooking.cropType}</strong> ({selectedBooking.quantityKg} kg)
                     <br />
                     <br />
-                    After marking complete:
+                    {t('confirmAfterMarking')}
                     <br />
-                    ✓ Booking status will be set to "Delivered"
+                    {t('statusWillBeSet')}
                     <br />
-                    ✓ Your status will return to "Idle"
+                    {t('statusWillReturn')}
                     <br />
-                    ✓ Location updates will go back to 60-second intervals
+                    {t('locationUpdates')}
                   </>
                 )}
               </>
@@ -530,7 +524,7 @@ export default function DriverBookings() {
         </DialogContent>
         <DialogActions>
           <Button onClick={closeDialog} disabled={actionLoading}>
-            Cancel
+            {t('cancel')}
           </Button>
           <Button
             onClick={handleConfirmAction}
@@ -539,7 +533,7 @@ export default function DriverBookings() {
             disabled={actionLoading}
             startIcon={actionLoading ? <CircularProgress size={20} /> : null}
           >
-            {actionLoading ? 'Processing...' : dialogAction === 'accept' ? 'Accept' : dialogAction === 'reject' ? 'Reject' : 'Confirm Delivery'}
+            {actionLoading ? t('processing') : dialogAction === 'accept' ? t('acceptBtn') : dialogAction === 'reject' ? t('rejectBtn') : t('confirmDelivery')}
           </Button>
         </DialogActions>
       </Dialog>
