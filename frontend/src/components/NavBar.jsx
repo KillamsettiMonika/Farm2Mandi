@@ -88,7 +88,7 @@ export default function NavBar(){
                       </ListItem>
                       <ListItem disablePadding>
                         <ListItemButton component={RouterLink} to={'/driver-bookings'}>
-                          <ListItemText primary="Bookings" />
+                          <ListItemText primary={t('driverBookings')} />
                         </ListItemButton>
                       </ListItem>
                     </>
@@ -143,7 +143,7 @@ export default function NavBar(){
             {user && isDriver && (
               <>
                 <Button sx={{ color: '#333', '&:hover': { backgroundColor: 'rgba(0,0,0,0.04)' } }} component={RouterLink} to={'/driver-location'}>{t('locationTracking')}</Button>
-                <Button sx={{ color: '#333', '&:hover': { backgroundColor: 'rgba(0,0,0,0.04)' } }} component={RouterLink} to={'/driver-bookings'}>Bookings</Button>
+                <Button sx={{ color: '#333', '&:hover': { backgroundColor: 'rgba(0,0,0,0.04)' } }} component={RouterLink} to={'/driver-bookings'}>{t('driverBookings')}</Button>
               </>
             )}
             <LanguageToggle compact />

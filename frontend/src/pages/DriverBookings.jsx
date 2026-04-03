@@ -198,10 +198,10 @@ export default function DriverBookings() {
         <Paper elevation={3} sx={{ p: 4, mb: 4 }}>
           <Typography variant="h4" sx={{ fontWeight: 700, mb: 1, display: 'flex', alignItems: 'center', gap: 1 }}>
             <DirectionsIcon color="primary" />
-            Booking History & Management
+            {t('bookingHistoryManagement')}
           </Typography>
           <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-            Manage your transportation bookings from farmers
+            {t('manageTransportationBookings')}
           </Typography>
 
           {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
@@ -209,7 +209,7 @@ export default function DriverBookings() {
 
           {bookings.length === 0 ? (
             <Alert severity="info">
-              No bookings yet. When farmers book your transportation service, they will appear here.
+              {t('noBookingsYet')}. When farmers book your transportation service, they will appear here.
             </Alert>
           ) : (
             <>
