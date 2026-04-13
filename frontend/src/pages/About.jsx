@@ -7,6 +7,7 @@ import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import ShowChartIcon from '@mui/icons-material/ShowChart';
 import PeopleIcon from '@mui/icons-material/People';
 import { useLanguage } from '../context/LanguageContext';
+import AboutImg from '../components/About.jpg';
 
 export default function About(){
   const { t } = useLanguage();
@@ -140,7 +141,7 @@ export default function About(){
             </Grid>
             <Grid item xs={12} md={6}>
               <Box sx={{ borderRadius:2, overflow:'hidden', boxShadow:3 }}>
-                <img src={'https://images.unsplash.com/photo-1506806732259-39c2d0268443?auto=format&fit=crop&w=1200&q=60'} alt="how it works" style={{ width:'100%', height:360, objectFit:'cover', display:'block' }} />
+                <img src={AboutImg} alt="how it works" style={{ width:'100%', height:360, objectFit:'cover', display:'block' }} />
               </Box>
             </Grid>
           </Grid>
