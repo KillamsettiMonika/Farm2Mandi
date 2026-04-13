@@ -91,10 +91,12 @@ function publicUser(user, fallbackRole) {
 }
 
 function hasTwilioVerifyConfig() {
+  const verifyServiceSid = process.env.TWILIO_VERIFY_SERVICE_SID;
   return Boolean(
     process.env.TWILIO_ACCOUNT_SID &&
     process.env.TWILIO_AUTH_TOKEN &&
-    process.env.TWILIO_VERIFY_SERVICE_SID
+    verifyServiceSid &&
+    verifyServiceSid.startsWith('VA')  // Verify Service SID must start with VA
   );
 }
 
@@ -104,43 +106,54 @@ async function sendMobileOtp(phone, otp) {
   const verifyServiceSid = process.env.TWILIO_VERIFY_SERVICE_SID;
   const twilioFrom = process.env.TWILIO_PHONE_NUMBER;
 
-  if (twilioSid && twilioAuthToken && verifyServiceSid) {
-    const url = `https://verify.twilio.com/v2/Services/${verifyServiceSid}/Verifications`;
-    const body = new URLSearchParams({
-      To: phone,
-      Channel: 'sms'
-    });
+  // Check if Verify Service SID is properly configured (should start with VA)
+  if (twilioSid && twilioAuthToken && verifyServiceSid && verifyServiceSid.startsWith('VA')) {
+    try {
+      const url = `https://verify.twilio.com/v2/Services/${verifyServiceSid}/Verifications`;
+      const body = new URLSearchParams({
+        To: phone,
+        Channel: 'sms'
+      });
 
-    await axios.post(url, body.toString(), {
-      auth: {
-        username: twilioSid,
-        password: twilioAuthToken
-      },
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      }
-    });
-    return;
+      await axios.post(url, body.toString(), {
+        auth: {
+          username: twilioSid,
+          password: twilioAuthToken
+        },
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      });
+      return;
+    } catch (err) {
+      console.error('Twilio Verify Service error:', err.response?.data || err.message);
+      // Fall back to SMS API if Verify Service fails
+    }
   }
 
   if (twilioSid && twilioAuthToken && twilioFrom) {
-    const url = `https://api.twilio.com/2010-04-01/Accounts/${twilioSid}/Messages.json`;
-    const body = new URLSearchParams({
-      To: phone,
-      From: twilioFrom,
-      Body: `Farm2Mandi OTP: ${otp}. Valid for ${Math.floor(OTP_TTL_MS / 60000)} minutes.`
-    });
+    try {
+      const url = `https://api.twilio.com/2010-04-01/Accounts/${twilioSid}/Messages.json`;
+      const body = new URLSearchParams({
+        To: phone,
+        From: twilioFrom,
+        Body: `Farm2Mandi OTP: ${otp}. Valid for ${Math.floor(OTP_TTL_MS / 60000)} minutes.`
+      });
 
-    await axios.post(url, body.toString(), {
-      auth: {
-        username: twilioSid,
-        password: twilioAuthToken
-      },
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      }
-    });
-    return;
+      await axios.post(url, body.toString(), {
+        auth: {
+          username: twilioSid,
+          password: twilioAuthToken
+        },
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      });
+      return;
+    } catch (err) {
+      console.error('Twilio SMS API error:', err.response?.data || err.message);
+      // Fall back to console logging
+    }
   }
 
   // Development fallback when SMS provider is not configured.

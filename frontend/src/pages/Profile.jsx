@@ -287,16 +287,6 @@ export default function Profile() {
             </Grid>
           </Box>
 
-          <Box sx={{ mt:4 }}>
-            <Typography variant="h6" sx={{ mb:1 }}>{t('changePassword')}</Typography>
-            <Box component="form" onSubmit={changePwd} sx={{ display:'grid', gap:2 }}>
-              <TextField label={t('oldPassword')} value={pwForm.oldPassword} type="password" onChange={e=>setPwForm(p=>({ ...p, oldPassword:e.target.value }))} fullWidth />
-              <TextField label={t('newPassword')} value={pwForm.newPassword} type="password" onChange={e=>setPwForm(p=>({ ...p, newPassword:e.target.value }))} fullWidth />
-              <Box sx={{ display:'flex', justifyContent:'flex-end' }}>
-                <Button type="submit" variant="outlined" disabled={pwLoading}>{pwLoading ? <CircularProgress size={18} /> : t('changePassword')}</Button>
-              </Box>
-            </Box>
-          </Box>
 
         </Paper>
       </Container>
