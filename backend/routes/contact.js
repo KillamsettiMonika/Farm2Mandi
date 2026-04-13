@@ -9,6 +9,32 @@ try {
 
 const router = express.Router();
 
+// Create transporter once and reuse it
+let transporter = null;
+
+function getTransporter() {
+  if (transporter) return transporter;
+  
+  const smtpHost = process.env.SMTP_HOST;
+  if (!smtpHost || !nodemailer) return null;
+  
+  transporter = nodemailer.createTransport({
+    host: smtpHost,
+    port: Number(process.env.SMTP_PORT) || 587,
+    secure: process.env.SMTP_SECURE === 'true',
+    auth: process.env.SMTP_USER
+      ? { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS }
+      : undefined,
+    connectionTimeout: 10000,
+    socketTimeout: 10000,
+    tls: {
+      rejectUnauthorized: false
+    }
+  });
+  
+  return transporter;
+}
+
 router.post('/', async (req, res) => {
   try {
     const { name, email, phone, message } = req.body;
@@ -22,8 +48,8 @@ router.post('/', async (req, res) => {
       return res.status(500).json({ error: 'Contact recipient email is not configured' });
     }
 
-    const smtpHost = process.env.SMTP_HOST;
-    if (!smtpHost || !nodemailer) {
+    const mailTransporter = getTransporter();
+    if (!mailTransporter) {
       console.log('Contact message received (email not configured):', {
         name,
         email,
@@ -33,15 +59,6 @@ router.post('/', async (req, res) => {
       });
       return res.json({ message: 'Message received successfully' });
     }
-
-    const transporter = nodemailer.createTransport({
-      host: smtpHost,
-      port: Number(process.env.SMTP_PORT) || 587,
-      secure: process.env.SMTP_SECURE === 'true',
-      auth: process.env.SMTP_USER
-        ? { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS }
-        : undefined
-    });
 
     const mailFrom = process.env.SMTP_FROM || 'no-reply@farm2mandi.local';
     const mailSubject = `New Contact Message from ${name}`;
@@ -56,7 +73,7 @@ router.post('/', async (req, res) => {
       message
     ].join('\n');
 
-    await transporter.sendMail({
+    await mailTransporter.sendMail({
       from: mailFrom,
       to: toEmail,
       replyTo: email,
@@ -64,9 +81,12 @@ router.post('/', async (req, res) => {
       text: mailText
     });
 
+    console.log(`✅ Contact message sent successfully to ${toEmail} from ${email}`);
     return res.json({ message: 'Message sent successfully' });
   } catch (err) {
-    console.error('Contact email error:', err);
+    console.error('Contact email error:', err.message || err);
+    console.error('Error code:', err.code);
+    console.error('SMTP Config - Host:', process.env.SMTP_HOST, 'Port:', process.env.SMTP_PORT, 'Secure:', process.env.SMTP_SECURE);
     return res.status(500).json({ error: 'Server error while sending contact message' });
   }
 });
