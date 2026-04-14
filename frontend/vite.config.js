@@ -7,9 +7,5 @@ export default defineConfig({
   server: {
     port: 5173,
     host: '0.0.0.0'
-  },
-  define: {
-    // Ensure environment variables are available at build time
-    'process.env': {}
   }
 })
