@@ -3,17 +3,24 @@ import axios from 'axios';
 // Determine API base URL based on environment
 let API_BASE = import.meta.env.VITE_API_BASE;
 
-if (!API_BASE) {
-  // Fallback: if running on Vercel deployed domain
-  if (typeof window !== 'undefined' && window.location.hostname.includes('vercel.app')) {
-    API_BASE = 'https://farm2mandi-ra80.onrender.com/api';
-  } else {
-    // Default to localhost for development
-    API_BASE = 'http://localhost:5000/api';
+// If VITE_API_BASE is not set, auto-detect
+if (!API_BASE || API_BASE === 'undefined') {
+  // Detect if running on Vercel deployed domain
+  if (typeof window !== 'undefined') {
+    const hostname = window.location.hostname;
+    
+    // On Vercel production
+    if (hostname.includes('vercel.app') || hostname.includes('farm2-mandi.vercel.app')) {
+      API_BASE = 'https://farm2mandi-ra80.onrender.com/api';
+    } 
+    // On localhost
+    else {
+      API_BASE = 'http://localhost:5000/api';
+    }
   }
 }
 
-console.log('API Base URL:', API_BASE);
+console.log('🌐 API Base URL:', API_BASE);
 
 const client = axios.create({
   baseURL: API_BASE,

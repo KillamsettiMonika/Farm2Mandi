@@ -1,10 +1,6 @@
 {
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
-  "env": {
-    "VITE_API_BASE": "https://farm2mandi-ra80.onrender.com/api"
-  },
-  "envPrefix": "VITE_",
   "rewrites": [
     {
       "source": "/(.*)",
