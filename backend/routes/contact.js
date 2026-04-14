@@ -14,26 +14,24 @@ let transporter = null;
 
 function getTransporter() {
   if (transporter) return transporter;
-  
+
   const smtpHost = process.env.SMTP_HOST;
   if (!smtpHost || !nodemailer) return null;
-  
+
   transporter = nodemailer.createTransport({
     host: smtpHost,
-    port: Number(process.env.SMTP_PORT) || 587,
-    secure: process.env.SMTP_SECURE === 'true',
+    port: 465,          // ✅ FIXED
+    secure: true,       // ✅ FIXED
     auth: process.env.SMTP_USER
       ? { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS }
       : undefined,
     connectionTimeout: 10000,
-    socketTimeout: 10000,
-    tls: {
-      rejectUnauthorized: false
-    }
+    socketTimeout: 10000
   });
-  
+
   return transporter;
 }
+
 
 router.post('/', async (req, res) => {
   try {
