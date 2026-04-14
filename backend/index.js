@@ -12,6 +12,14 @@ const predictRoutes = require('./routes/predict');
 const driverRoutes = require('./routes/driver');
 const transportRoutes = require('./routes/transport');
 const contactRoutes = require('./routes/contact');
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://localhost:3000',
+  'https://farm2mandi.onrender.com',
+  'https://farm2-mandi.vercel.app',
+  'https://farm2-mandi-ekmy3pv04-killamsettimonikas-projects.vercel.app' // ADD THIS
+];
+
 
 const app = express();
 const PORT = process.env.PORT || 5000;
