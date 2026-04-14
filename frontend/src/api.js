@@ -1,4 +1,6 @@
 import axios from 'axios';
+import emailjs from 'emailjs-com';
+
 
 // Determine API base URL based on environment
 let API_BASE = import.meta.env.VITE_API_BASE;
@@ -202,7 +204,18 @@ export async function getDriverBookings() {
 }
 
 // Contact endpoint
+// Contact endpoint using EmailJS
 export async function sendContactMessage(data) {
-  const res = await client.post('/contact', data);
-  return res.data;
+  return emailjs.send(
+    "service_szlpmx4",
+    "074uw36",
+    {
+      name: data.name,
+      email: data.email,
+      message: data.message,
+      phone: data.phone || ""
+    },
+    "M9EPGwpia5C6Q-unZ"
+  );
 }
+
