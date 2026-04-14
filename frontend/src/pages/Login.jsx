@@ -151,9 +151,6 @@ export default function Login() {
               </Box>
 
               <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 2 }}>
-                <Link component={RouterLink} to="/forgot" variant="body2" sx={{ color: 'primary.main' }}>
-                  {t('forgotPassword')}
-                </Link>
                 <Link component={RouterLink} to="/register" variant="body2" sx={{ color: 'primary.main' }}>
                   {t('createAccount')}
                 </Link>
