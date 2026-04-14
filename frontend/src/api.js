@@ -205,7 +205,6 @@ export async function getDriverBookings() {
 
 // Contact endpoint
 // Contact endpoint using EmailJS
-import emailjs from 'emailjs-com';
 
 export async function sendContactMessage(data) {
   return emailjs.send(
