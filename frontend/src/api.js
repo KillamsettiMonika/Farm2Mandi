@@ -21,10 +21,29 @@ if (!API_BASE || API_BASE === 'undefined') {
 }
 
 console.log('🌐 API Base URL:', API_BASE);
+console.log('📍 Running on:', typeof window !== 'undefined' ? window.location.hostname : 'server');
 
 const client = axios.create({
   baseURL: API_BASE,
   withCredentials: true
+});
+
+// Add request interceptor for debugging
+client.interceptors.request.use(config => {
+  console.log('📤 API Request:', config.method.toUpperCase(), config.baseURL + config.url);
+  return config;
+}, error => {
+  console.error('❌ Request Error:', error);
+  return Promise.reject(error);
+});
+
+// Add response interceptor for debugging
+client.interceptors.response.use(response => {
+  console.log('✅ API Response:', response.status, response.statusText);
+  return response;
+}, error => {
+  console.error('❌ Response Error:', error.response?.status, error.response?.statusText, error.message);
+  return Promise.reject(error);
 });
 
 
