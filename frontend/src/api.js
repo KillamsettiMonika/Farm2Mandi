@@ -211,7 +211,7 @@ export async function sendContactMessage(data) {
 
   return emailjs.send(
     "service_szlpmx4",
-    "074uw36",
+    "template_3ly9sk6",
     {
       name: data.name,
       email: data.email,
