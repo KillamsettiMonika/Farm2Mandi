@@ -207,11 +207,11 @@ export async function getDriverBookings() {
 // Contact endpoint using EmailJS
 
 export async function sendContactMessage(data) {
-  console.log("Sending data:", data);   // 👈 ADD THIS
+  console.log("Sending data:", data);
 
   return emailjs.send(
     "service_szlpmx4",
-    "template_3ly9sk6",
+    "template_v504xv4",   // ✅ UPDATED HERE
     {
       name: data.name,
       email: data.email,
@@ -221,4 +221,3 @@ export async function sendContactMessage(data) {
     "M9EPGwpia5C6Q-unZ"
   );
 }
-
