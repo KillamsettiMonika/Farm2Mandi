@@ -4,10 +4,10 @@ import GitHubIcon from '@mui/icons-material/GitHub';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import BackButton from '../components/BackButton';
 import { useLanguage } from '../context/LanguageContext';
-import monikaImg from '../assets/team/monika.jpg';
-import dhanalaxmiImg from '../assets/team/dhanalaxmi.svg';
-import srinivasImg from '../assets/team/srinivas.svg';
-import joshiImg from '../assets/team/joshi.svg';
+import monikaImg from '../components/TeamImages/monika.jpg';
+import dhanalaxmiImg from '../components/TeamImages/dhanalaxmi.jpg';
+import srinivasImg from '../components/TeamImages/srinivas.jpg';
+import joshiImg from '../components/TeamImages/joshi.jpg';
 
 export default function Team() {
   const { t } = useLanguage();
