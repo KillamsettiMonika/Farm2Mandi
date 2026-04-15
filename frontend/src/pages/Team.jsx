@@ -4,10 +4,10 @@ import GitHubIcon from '@mui/icons-material/GitHub';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import BackButton from '../components/BackButton';
 import { useLanguage } from '../context/LanguageContext';
-import monikaImg from '../components/TeamImages/monika.jpg';
-import dhanalaxmiImg from '../components/TeamImages/dhanalaxmi.jpg';
-import srinivasImg from '../components/TeamImages/srinivas.jpg';
-import joshiImg from '../components/TeamImages/joshi.jpg';
+import monikaImg from '../components/TeamImages/monika.jpeg';
+import dhanalaxmiImg from '../components/TeamImages/dhanalaxmi.jpeg';
+import srinivasImg from '../components/TeamImages/srinivas.jpeg';
+import joshiImg from '../components/TeamImages/joshi.jpeg';
 
 export default function Team() {
   const { t } = useLanguage();
@@ -157,12 +157,7 @@ export default function Team() {
       </Container>
 
       {/* Footer Message */}
-      <Container maxWidth="lg" sx={{ mt: 8, textAlign: 'center' }}>
-        <Divider sx={{ mb: 4 }} />
-        <Typography variant="body1" color="text.secondary">
-          {t('teamMessage')}
-        </Typography>
-      </Container>
+      
     </Box>
   );
 }
