@@ -4,7 +4,7 @@ import GitHubIcon from '@mui/icons-material/GitHub';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import BackButton from '../components/BackButton';
 import { useLanguage } from '../context/LanguageContext';
-import monikaImg from '../assets/team/monika.svg';
+import monikaImg from '../assets/team/monika.jpg';
 import dhanalaxmiImg from '../assets/team/dhanalaxmi.svg';
 import srinivasImg from '../assets/team/srinivas.svg';
 import joshiImg from '../assets/team/joshi.svg';
