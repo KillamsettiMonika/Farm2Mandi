@@ -391,6 +391,10 @@ const translations = {
     iosInstallStep1: 'Tap the Share button',
     iosInstallStep2: 'Select "Add to Home Screen"',
     gotIt: 'Got It',
+
+    // Team Page
+    ourTeam: 'Our Team',
+    teamDescription: 'A team of talented individuals who developed Farm2Mandi.',
   },
 
   te: {
@@ -785,6 +789,10 @@ const translations = {
     iosInstallStep1: 'షేర్ బటన్ నొక్కండి',
     iosInstallStep2: '"హోమ్ స్క్రీన్‌కు జోడించు" ఎంచుకోండి',
     gotIt: 'అర్థమైంది',
+
+    // Team Page
+    ourTeam: 'మా టీమ్',
+    teamDescription: 'Farm2Mandi ను అభివృద్ధి చేసిన ప్రతిభాశాలీ వ్యక్తుల కూటమి.',
   }
 };
 

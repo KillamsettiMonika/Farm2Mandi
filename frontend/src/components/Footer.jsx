@@ -26,6 +26,7 @@ export default function Footer(){
               <Link href="/input" underline="none">Get recommendation</Link>
               <Link href="/transport" underline="none">Transport</Link>
               <Link href="/about" underline="none">About</Link>
+              <Link href="/team" underline="none">Team</Link>
               <Link href="/contact" underline="none">Contact</Link>
             </Box>
           </Grid>

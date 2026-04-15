@@ -14,6 +14,7 @@ import Tracking from './pages/Tracking';
 import MyBookings from './pages/MyBookings';
 import About from './pages/About';
 import Contact from './pages/Contact';
+import Team from './pages/Team';
 import Profile from './pages/Profile';
 import Browse from './pages/Browse';
 import DriverLocation from './pages/DriverLocation';
@@ -59,6 +60,7 @@ export default function App() {
           <Route path="/driver-bookings" element={<RequireAuth><DriverBookings /></RequireAuth>} />
           <Route path="/browse" element={<Browse />} />
           <Route path="/about" element={<About />} />
+          <Route path="/team" element={<Team />} />
           <Route path="/contact" element={<Contact />} />
         </Routes>
       </main>
